@@ -11,17 +11,22 @@ const Home = () => {
   const [responseData, setResponseData] = useState([]);
   const [loader, setLoader] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [errorType, setErrorType] = useState("");
+
   useEffect(() => {
-    data();
-    if (sessionStorage.getItem("responseData")) {
-      setLoader(false);
-      setAlert(false);
-      setResponseData(JSON.parse(sessionStorage.getItem("responseData")));
-    }
+    fetchData();
   }, []);
-  const data = async () => {
+
+  const fetchData = async () => {
     setLoader(true);
     setAlert(false);
+    setErrorType("");
+
+    const timeout = setTimeout(() => {
+      setErrorType("timeout");
+      setAlert(true);
+    }, 5000);
+
     const ApiAM = "https://games-test-api-81e9fb0d564a.herokuapp.com/api/data/";
     try {
       const response = await axios.get(ApiAM, {
@@ -30,14 +35,16 @@ const Home = () => {
           "dev-email-address": "gfonseca3117@gmail.com",
         },
       });
-      return (
-        setResponseData(response.data),
-        sessionStorage.setItem("responseData", JSON.stringify(response.data)),
-        setLoader(false),
-        setAlert(false)
-      );
-    } catch (e) {
-      console.log(e);
+      clearTimeout(timeout);
+
+      setResponseData(response.data);
+      sessionStorage.setItem("responseData", JSON.stringify(response.data));
+      setLoader(false);
+      setAlert(false);
+    } catch (error) {
+      console.log(error);
+      clearTimeout(timeout);
+      setErrorType("error");
       setAlert(true);
     }
   };
@@ -45,7 +52,15 @@ const Home = () => {
   return (
     <Container>
       {loader && <LoaderComponent />}
-      {alert && <AlertComponent text = "O servidor falhou em responder, tente recarregar a página"/>}
+      {alert && (
+        <AlertComponent
+          text={
+            errorType === "timeout"
+              ? "O servidor demorou para responder, tente mais tarde"
+              : "O servidor falhou em responder, tente recarregar a página"
+          }
+        />
+      )}
       <Header />
       <CenterContainer>
         {responseData.map((value, id) => (
