@@ -3,7 +3,7 @@ Como instalar:
 npm install --force
 Como rodar: npm run dev
 
-https://64990190df9c3f69aca94283--inquisitive-cupcake-3685a9.netlify.app
+Deploy: https://64990190df9c3f69aca94283--inquisitive-cupcake-3685a9.netlify.app
 
 
 ![image](https://github.com/MonteiroGabriel15/projetoappmasters/assets/103008270/f1e981d6-8f57-4c04-a3ea-a461c9aa4b69)
